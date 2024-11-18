@@ -7,7 +7,7 @@ pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
 pkgdesc="A friendly interface using bigbashview and that uses a large part of pamac resources to offer users a practical and simple interface"
-url="https://github.com/biglinux/$pkgname"
+url="https://github.com/chililinux/$pkgname"
 source=("git+${url}.git")
 depends=('bc'
 	'bigbashview'
