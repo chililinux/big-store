@@ -2,7 +2,7 @@
 # Altered: 2023/10/02
 
 pkgname=big-store
-pkgver=$(date +%y.%m.%d)
+pkgver=$(date +%Y%m%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
