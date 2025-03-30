@@ -157,16 +157,16 @@ post_install() {
 		pacman -Sy --quiet --noconfirm &>/dev/null
 	}
 
-  install_packages() {
-    # Captura o erro do pacman
-   if ! pacman -S --quiet --noconfirm --needed --overwrite \* "$@"  > /tmp/${pkgname}-pacman_output.log 2>/tmp/${pkgname}-pacman_error_log; then
-      die "$(</tmp/${pkgname}-pacman_error_log)"
-    fi
-    # Se não houver erro (ou erro de já estar instalado/atualizado)
-    rm /tmp/${pkgname}-pacman_error_log  &>/dev/null
-    rm /tmp/${pkgname}-pacman_output.log &>/dev/null
-    return 0
-  }
+	install_packages() {
+		# Captura o erro do pacman
+		if ! pacman -S --quiet --noconfirm --needed --overwrite \* "$@" >/tmp/${pkgname}-pacman_output_log 2>/tmp/${pkgname}-pacman_error_log; then
+			die "$(</tmp/${pkgname}-pacman_error_log)"
+		fi
+		# Se não houver erro (ou erro de já estar instalado/atualizado)
+		rm /tmp/${pkgname}-pacman_error_log &>/dev/null
+		rm /tmp/${pkgname}-pacman_output_log &>/dev/null
+		return 0
+	}
 
 	#	msg "Please wait, synchronizing databases..."
 	#	synchronizing_database
