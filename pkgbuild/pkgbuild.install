@@ -161,11 +161,11 @@ post_install() {
 		pacman -S --quiet --noconfirm --needed --overwrite \* "$@" &>/dev/null
 	}
 
-	msg "Please wait, synchronizing databases..."
-	synchronizing_database
+#	msg "Please wait, synchronizing databases..."
+#	synchronizing_database
 
-	msg "Checking for the existence of packages..."
-	sh_check_package_exist
+#	msg "Checking for the existence of packages..."
+#	sh_check_package_exist
 
 	msg "Installing optdepends packages: ${OPTDEPENDS[*]}"
 	install_packages "${OPTDEPENDS[@]}"
