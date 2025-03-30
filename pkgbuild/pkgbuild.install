@@ -159,11 +159,12 @@ post_install() {
 
   install_packages() {
     # Captura o erro do pacman
-   if ! pacman -S --quiet --noconfirm --needed --overwrite \* "$@" 2>/tmp/${pkgname}-pacman_error_log; then
+   if ! pacman -S --quiet --noconfirm --needed --overwrite \* "$@"  > /tmp/${pkgname}-pacman_output.log 2>/tmp/${pkgname}-pacman_error_log; then
       die "$(</tmp/${pkgname}-pacman_error_log)"
     fi
     # Se não houver erro (ou erro de já estar instalado/atualizado)
-    rm /tmp/${pkgname}-pacman_error_log &>/dev/null
+    rm /tmp/${pkgname}-pacman_error_log  &>/dev/null
+    rm /tmp/${pkgname}-pacman_output.log &>/dev/null
     return 0
   }
 
