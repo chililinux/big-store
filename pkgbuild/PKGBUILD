@@ -1,66 +1,74 @@
 # Maintainer: Bruno Goncalves <bigbruno@gmail.com>
-# Altered: 2023/10/02
+# Altered: dom 30 mar 2025 10:28:38 -04
 
 pkgname=big-store
+pkgdesc="A friendly interface using bigbashview and that uses a large part of pamac resources to offer users a practical and simple interface"
 pkgver=$(date +%Y%m%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
-pkgdesc="A friendly interface using bigbashview and that uses a large part of pamac resources to offer users a practical and simple interface"
 url="https://github.com/chililinux/$pkgname"
 source=("git+${url}.git")
-depends=('bc'
-	'bigbashview'
-	'bigcontrolcenter-base'
-	'bigsudo'
-	'curl'
-	'force-upgrade'
-	'gawk'
-	'grep'
-	'jq'
-	'pamac-gtk'
-	'paru'
-	'parallel'
-	'python-gobject'
-	'rxvt-unicode'
-	'sed'
-	'flatpak'
-	'ttf-comfortaa'
-	'ttf-ubuntu-font-family'
-	'xorg-xwininfo'
-	'xorg-xwininfo'
-	'xorg-xrandr'
-	'wmctrl'
-	'yay'
-	'sqlite'
-	'translate-shell')
-depends_x86_64=('xsetprop' 'xtermset')
-optdepends=('libpamac-snap-plugin'
-	'libpamac-flatpak-plugin'
-	'pamac-snap-plugin'
-	'pamac-flatpak-plugin')
 md5sums=(SKIP)
+depends=()
+optdepends=(
+  bc
+  bigcontrolcenter-base
+  bigbashview
+  bigsudo
+  curl
+	force-upgrade
+  gawk
+  grep
+  jq
+  pamac-gtk
+  paru
+  parallel
+  python-gobject
+  rxvt-unicode
+  sed
+  flatpak
+  ttf-comfortaa
+  ttf-ubuntu-font-family
+  xorg-xwininfo
+  xorg-xwininfo
+  xorg-xrandr
+  wmctrl
+  yay
+  sqlite
+  translate-shell
+  xsetprop
+  xtermset
+  libpamac-snap-plugin
+  libpamac-flatpak-plugin
+  pamac-snap-plugin
+  pamac-flatpak-plugin
+)
 
 package() {
-	# Verify default folder
-	if [ -d "${srcdir}/${pkgname}/${pkgname}" ]; then
-		InternalDir="${srcdir}/${pkgname}/${pkgname}"
-	else
-		InternalDir="${srcdir}/${pkgname}"
-	fi
+  cd "${srcdir}/${pkgname}"
 
-	# Copy files
-	if [ -d "${InternalDir}/usr" ]; then
-		cp -r "${InternalDir}/usr" "${pkgdir}/"
-	fi
+  # mkdir -p "${pkgdir}/usr/share/${pkgname}"
+  install -dm755 "${pkgdir}/usr/share/${pkgname}"
+  printf "%s\n" "${optdepends[@]}" >"${pkgdir}/usr/share/${pkgname}/optdepends"
 
-	if [ -d "${InternalDir}/etc" ]; then
-		cp -r "${InternalDir}/etc" "${pkgdir}/"
-	fi
+  # Copiar a estrutura de /etc, /usr e /opt para /usr/share/${pkgname}
+  local dirs=("usr" "etc" "opt")
+  for dir in "${dirs[@]}"; do
+    if [ -d "${srcdir}/${pkgname}/${dir}" ]; then
+      cp -a "${srcdir}/${pkgname}/${dir}" "${pkgdir}/usr/share/${pkgname}/"
+    fi
+  done
 
-	if [ -d "${InternalDir}/opt" ]; then
-		cp -r "${InternalDir}/opt" "${pkgdir}/"
-	fi
+  # Install license file if present
+  if [ -f "LICENSE" ]; then
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  fi
+
+  # Install documentation if present
+  if [ -f "README.md" ]; then
+    install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+  fi
 
 	# Add link to bin path
 	mkdir "${pkgdir}/usr/bin"
