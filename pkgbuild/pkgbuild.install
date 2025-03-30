@@ -29,6 +29,7 @@ export DOTPREFIX="  ${black}::${reset} "
 export bold="\033[1m"
 export reset="\033[0m"
 declare IS_UPGRADE=false
+declare IS_DBLOCK=false
 declare DM='lightdm'
 declare WM='big-store'
 declare pkgname="${WM}"
@@ -64,8 +65,10 @@ sh_load_optdepends() {
 }
 
 sh_restoring_lock() {
-	msg "Restauring pacman lock: /var/lib/pacman/db.lck"
-	touch /var/lib/pacman/db.lck &>/dev/null
+	if $IS_DBLOCK; then
+		msg "Restauring pacman lock: /var/lib/pacman/db.lck"
+		touch /var/lib/pacman/db.lck &>/dev/null
+	fi
 }
 
 sh_check_package_exist() {
@@ -149,6 +152,7 @@ post_install() {
 	fi
 
 	if [[ -f /var/lib/pacman/db.lck ]]; then
+		IS_DBLOCK=true
 		msg "Removing pacman lock: /var/lib/pacman/db.lck"
 		rm -f /var/lib/pacman/db.lck &>/dev/null
 	fi
