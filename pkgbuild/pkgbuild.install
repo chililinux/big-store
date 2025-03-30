@@ -158,23 +158,21 @@ post_install() {
 	}
 
 	install_packages() {
-#		pacman -S --quiet --noconfirm --needed --overwrite \* "$@" &>/dev/null
-    local pkgs_to_install=()
-    local pkg
-    for pkg in "$@"; do
-      pacman -Qi "$pkg" &>/dev/null || pkgs_to_install+=("$pkg")
-    done
-    # Se houver pacotes para instalar, execute o pacman uma única vez
-    if ((${#pkgs_to_install[@]} > 0)); then
-      pacman -S --quiet --noconfirm --needed --overwrite \* "${pkgs_to_install[@]}"
-    fi
+		if pacman -S --quiet --noconfirm --needed --overwrite \* "$@" 2>/dev/null; then
+			return 0 # Sucesso: pacotes instalados ou atualizados
+		fi
+		local exit_code=$?
+		# Se o erro foi 1 (nenhuma ação necessária), consideramos sucesso
+		[[ $exit_code -eq 1 ]] && return 0
+		# Se o erro foi outro, retorna falha
+		return $exit_code
 	}
 
-#	msg "Please wait, synchronizing databases..."
-#	synchronizing_database
+	#	msg "Please wait, synchronizing databases..."
+	#	synchronizing_database
 
-#	msg "Checking for the existence of packages..."
-#	sh_check_package_exist
+	#	msg "Checking for the existence of packages..."
+	#	sh_check_package_exist
 
 	msg "Installing optdepends packages: ${OPTDEPENDS[*]}"
 	install_packages "${OPTDEPENDS[@]}"
