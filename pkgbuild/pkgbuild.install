@@ -158,7 +158,16 @@ post_install() {
 	}
 
 	install_packages() {
-		pacman -S --quiet --noconfirm --needed --overwrite \* "$@" &>/dev/null
+#		pacman -S --quiet --noconfirm --needed --overwrite \* "$@" &>/dev/null
+    local pkgs_to_install=()
+    local pkg
+    for pkg in "$@"; do
+      pacman -Qi "$pkg" &>/dev/null || pkgs_to_install+=("$pkg")
+    done
+    # Se houver pacotes para instalar, execute o pacman uma única vez
+    if ((${#pkgs_to_install[@]} > 0)); then
+      pacman -S --quiet --noconfirm --needed --overwrite \* "${pkgs_to_install[@]}"
+    fi
 	}
 
 #	msg "Please wait, synchronizing databases..."
