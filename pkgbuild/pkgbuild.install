@@ -157,16 +157,15 @@ post_install() {
 		pacman -Sy --quiet --noconfirm &>/dev/null
 	}
 
-	install_packages() {
-		if pacman -S --quiet --noconfirm --needed --overwrite \* "$@" 2>/dev/null; then
-			return 0 # Sucesso: pacotes instalados ou atualizados
-		fi
-		local exit_code=$?
-		# Se o erro foi 1 (nenhuma ação necessária), consideramos sucesso
-		[[ $exit_code -eq 1 ]] && return 0
-		# Se o erro foi outro, retorna falha
-		return $exit_code
-	}
+  install_packages() {
+    # Captura o erro do pacman
+   if ! pacman -S --quiet --noconfirm --needed --overwrite \* "$@" 2>/tmp/${pkgname}-pacman_error_log; then
+      die "$(</tmp/${pkgname}-pacman_error_log)"
+    fi
+    # Se não houver erro (ou erro de já estar instalado/atualizado)
+    rm /tmp/${pkgname}-pacman_error_log &>/dev/null
+    return 0
+  }
 
 	#	msg "Please wait, synchronizing databases..."
 	#	synchronizing_database
