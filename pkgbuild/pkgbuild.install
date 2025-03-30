@@ -137,7 +137,6 @@ sh_copy_user_etc_usr_opt_files() {
 post_install() {
 	msg "Initializing system installation and configuration..."
 
-	sh_copy_user_etc_usr_opt_files
 	sh_load_optdepends
 
 	[[ -e /etc/environment ]] && source /etc/environment
@@ -193,6 +192,8 @@ post_install() {
 			fi
 		fi
 	done
+
+	sh_copy_user_etc_usr_opt_files
 
 	# Restauring pacman lock: /var/lib/pacman/db.lck
 	sh_restoring_lock
